@@ -1,4 +1,4 @@
-import krovetzstemmer
+import nltk
 
 # remove stop words
 # lemmatize remaining tokens

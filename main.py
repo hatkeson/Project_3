@@ -16,11 +16,17 @@ if __name__ == "__main__":
     # first number is folder
     # second number is file
     for key in bookkeeping:
+        print(key)
         folder_file = key.split('/')
+        if folder_file[0] != '0': # hardcoded limit, remove when ready for full corpus
+            break
         print(bookkeeping[key])
         with open(webpages_folder + '\\' + folder_file[0] + '\\' + folder_file[1], 'rb') as f:
             page = BeautifulSoup(f)
-        print(page)
+            title = page.find('title')
+            heading = page.find('h1')
+            bold = page.find('b')
+        print(bold)
 
 # remove stop words
 # lemmatize remaining tokens
