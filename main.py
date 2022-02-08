@@ -8,7 +8,6 @@ from crawler import Crawler
 from frontier import Frontier
 
 
-# copy corpus.py and frontier.py from project 2
 # create inverted index
 # remove stop words
 # lemmatize remaining tokens

@@ -12,6 +12,12 @@ import tldextract
 
 logger = logging.getLogger(__name__)
 
+# create inverted index
+# remove stop words
+# lemmatize remaining tokens
+# store tf-idf
+# note words in title, bold and heading (h1, h2, h3)
+
 
 class Crawler:
     """
