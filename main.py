@@ -16,7 +16,8 @@ if __name__ == "__main__":
     # second number is file
     for key in bookkeeping:
         folder_file = key.split('/')
-        with open(webpages_folder + '\\' + folder_file[0] + '\\' + folder_file[1]) as f:
+        print(bookkeeping[key])
+        with open(webpages_folder + '\\' + folder_file[0] + '\\' + folder_file[1], 'rb') as f:
             page = BeautifulSoup(f)
         print(page)
 
