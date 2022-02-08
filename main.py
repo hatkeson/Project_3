@@ -1,34 +1,27 @@
-import atexit
-import logging
-
+import json
 import sys
-
-from corpus import Corpus
-from crawler import Crawler
-from frontier import Frontier
-
-
-# create inverted index
-# remove stop words
-# lemmatize remaining tokens
-# store tf-idf
-# note words in title, bold and heading (h1, h2, h3)
+from bs4 import BeautifulSoup
 
 if __name__ == "__main__":
-    # Configures basic logging
-    logging.basicConfig(format='%(asctime)s (%(name)s) %(levelname)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p',
-                        level=logging.INFO)
 
-    # Instantiates frontier and loads the last state if exists
-    frontier = Frontier()
-    frontier.load_frontier()
+   # get directory of the webpages file
+    webpages_folder = sys.argv[1]
 
-    # Instantiates corpus object with the given cmd arg
-    corpus = Corpus(sys.argv[1])
+    # get the bookkeeping file
+    with open(webpages_folder + '\\bookkeeping.json') as f:
+        bookkeeping = json.load(f)
 
-    # Registers a shutdown hook to save frontier state upon unexpected shutdown
-    atexit.register(frontier.save_frontier)
+    # for each entry in bookkeeping, navigate to the folder and then file, and read it with BS
+    # first number is folder
+    # second number is file
+    for key in bookkeeping:
+        folder_file = key.split('/')
+        with open(webpages_folder + '\\' + folder_file[0] + '\\' + folder_file[1]) as f:
+            page = BeautifulSoup(f)
+        print(page)
 
-    # Instantiates a crawler object and starts crawling
-    crawler = Crawler(frontier, corpus)
-    crawler.start_crawling()
+# remove stop words
+# lemmatize remaining tokens
+# create inverted index
+# store tf-idf
+# note words in title, bold and heading (h1, h2, h3)
