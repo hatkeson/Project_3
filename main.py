@@ -1,6 +1,7 @@
 import json
 import sys
 from bs4 import BeautifulSoup
+import index_constructor
 
 if __name__ == "__main__":
 
