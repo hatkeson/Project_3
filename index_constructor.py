@@ -63,12 +63,16 @@ class InvertedIndex:
             lemmatizer = WordNetLemmatizer()
             text_tokens_len = len(text_tokens)
             for i in range(0, text_tokens_len):
-                text_tokens[i] = lemmatizer.lemmatize(text_tokens[i].strip(punctuation))
+                text_tokens[i] = lemmatizer.lemmatize(str.lower(text_tokens[i].strip(punctuation)))
 
             # add to inverted index
             for word in text_tokens:
                 if word not in self.stopwords:
-                    self.index.setdefault(word,[]).append(key)
+                    if word in self.index and key in self.index[word]: # increment frequency in this document
+                        self.index[word][key] += 1
+                    else: # create new entry for this document
+                        self.index[word] = {key: 1}
+
             print(self.index)
 
             title = page.find('title')
