@@ -56,11 +56,13 @@ class InvertedIndex:
                 heading_3 = page.find('h3')
                 bold = page.find('b')
             if title:
-                print(title.get_text())
+                print(title.string)
             if heading_1:
-                print(heading_1.get_text())
+                print(heading_1.string)
             if heading_2:
-                
+                pass
             if heading_3:
+                pass
             if bold:
+                pass
 
