@@ -1,4 +1,6 @@
-import nltk
+from nltk.tokenize import WhitespaceTokenizer
+from nltk.stem import WordNetLemmatizer
+from string import punctuation
 import json
 from bs4 import BeautifulSoup
 
@@ -50,15 +52,34 @@ class InvertedIndex:
             print(bookkeeping[key])
             with open(corpus_path + '\\' + folder_file[0] + '\\' + folder_file[1], 'rb') as f:
                 page = BeautifulSoup(f)
-                title = page.find('title')
-                heading_1 = page.find('h1')
-                heading_2 = page.find('h2')
-                heading_3 = page.find('h3')
-                bold = page.find('b')
+
+            # tokenize
+            # Whitespace tokenizer - keep contractions because they're in stopwords
+            tokenizer = WhitespaceTokenizer()
+            text_tokens = tokenizer.tokenize(page.get_text())
+
+            # lemmatize - must strip leading and trailing punctuation because whitespace
+            # tokenizer leaves them in
+            lemmatizer = WordNetLemmatizer()
+            text_tokens_len = len(text_tokens)
+            for i in range(0, text_tokens_len):
+                text_tokens[i] = lemmatizer.lemmatize(text_tokens[i].strip(punctuation))
+
+            # add to inverted index
+            for word in text_tokens:
+                if word not in self.stopwords:
+                    self.index.setdefault(word,[]).append(key)
+            print(self.index)
+
+            title = page.find('title')
+            heading_1 = page.find('h1')
+            heading_2 = page.find('h2')
+            heading_3 = page.find('h3')
+            bold = page.find('b')
             if title:
-                print(title.string)
+                pass
             if heading_1:
-                print(heading_1.string)
+                pass
             if heading_2:
                 pass
             if heading_3:
