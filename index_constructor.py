@@ -1,5 +1,6 @@
 from nltk.tokenize import WhitespaceTokenizer
 from nltk.stem import WordNetLemmatizer
+import nltk.corpus
 from string import punctuation
 import json
 from bs4 import BeautifulSoup
@@ -21,6 +22,7 @@ def get_tf_idf():
     pass
 
 
+
 class InvertedIndex:
     def __init__(self):
         self.document_count = 0
@@ -36,6 +38,7 @@ class InvertedIndex:
 
 
     def read_corpus(self, corpus_path):
+        nltk_words = set(nltk.corpus.words.words())
         # get the bookkeeping file
         print(corpus_path)
         with open(corpus_path + '\\bookkeeping.json') as f:
@@ -45,11 +48,9 @@ class InvertedIndex:
         # first number is folder
         # second number is file
         for key in bookkeeping:
-            print(key)
             folder_file = key.split('/')
             if folder_file[0] != '0': # hardcoded limit, remove when ready for full corpus
                 break
-            print(bookkeeping[key])
             with open(corpus_path + '\\' + folder_file[0] + '\\' + folder_file[1], 'rb') as f:
                 page = BeautifulSoup(f)
 
@@ -57,6 +58,8 @@ class InvertedIndex:
             # Whitespace tokenizer - keep contractions because they're in stopwords
             tokenizer = WhitespaceTokenizer()
             text_tokens = tokenizer.tokenize(page.get_text())
+            # delete non-english words
+            text_tokens = [w for w in text_tokens if w.lower() in nltk_words]
 
             # lemmatize - must strip leading and trailing punctuation because whitespace
             # tokenizer leaves them in
@@ -73,7 +76,6 @@ class InvertedIndex:
                     else: # create new entry for this document
                         self.index[word] = {key: 1}
 
-            print(self.index)
 
             title = page.find('title')
             heading_1 = page.find('h1')
@@ -91,3 +93,4 @@ class InvertedIndex:
             if bold:
                 pass
 
+        print(self.index)
