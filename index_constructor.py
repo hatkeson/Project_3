@@ -71,10 +71,10 @@ class InvertedIndex:
                     # TODO: UPDATE FREQUENCY PROPERLY (is this correct?)
                     for word in text_tokens:
                         if word not in self.stopwords:
-                            if word in self.index and key in self.index[word][0]:  # increment frequency in this document
-                                self.index[word][0][key] += 1
+                            if word in self.index and key in self.index[word]:  # increment frequency in this document
+                                self.index[word][key][0] += 1
                             else:  # create new entry for this document
-                                self.index[word] = [{key: 1}, 4, 0]  # List order: [{docID: freq}, type, tf-idf]
+                                self.index[word] = {key: [1, 4, 0]}  # List order: {docID: [freq, type, tf-idf]}
                 except TypeError:
                     pass
 
@@ -89,10 +89,10 @@ class InvertedIndex:
                     # TODO: UPDATE FREQUENCY PROPERLY (is this correct?)
                     for word in text_tokens:
                         if word not in self.stopwords:
-                            if word in self.index and key in self.index[word][0]:  # increment frequency in this document
-                                self.index[word][0][key] += 1
+                            if word in self.index and key in self.index[word]:  # increment frequency in this document
+                                self.index[word][key][0] += 1
                             else:  # create new entry for this document
-                                self.index[word] = [{key: 1}, 3, 0]  # List order: [{docID: freq}, type, tf-idf]
+                                self.index[word] = {key: [1, 3, 0]}  # List order: {docID: [freq, type, tf-idf]}
                 except TypeError:
                     pass
 
@@ -107,10 +107,10 @@ class InvertedIndex:
                     # TODO: UPDATE FREQUENCY PROPERLY (is this correct?)
                     for word in text_tokens:
                         if word not in self.stopwords:
-                            if word in self.index and key in self.index[word][0]:  # increment frequency in this document
-                                self.index[word][0][key] += 1
+                            if word in self.index and key in self.index[word]:  # increment frequency in this document
+                                self.index[word][key][0] += 1
                             else:  # create new entry for this document
-                                self.index[word] = [{key: 1}, 3, 0]  # List order: [{docID: freq}, type, tf-idf]
+                                self.index[word] = {key: [1, 3, 0]}  # List order: {docID: [freq, type, tf-idf]}
                 except TypeError:
                     pass
 
@@ -125,10 +125,10 @@ class InvertedIndex:
                     # TODO: UPDATE FREQUENCY PROPERLY (is this correct?)
                     for word in text_tokens:
                         if word not in self.stopwords:
-                            if word in self.index and key in self.index[word][0]:  # increment frequency in this document
-                                self.index[word][0][key] += 1
+                            if word in self.index and key in self.index[word]:  # increment frequency in this document
+                                self.index[word][key][0] += 1
                             else:  # create new entry for this document
-                                self.index[word] = [{key: 1}, 3, 0]  # List order: [{docID: freq}, type, tf-idf]
+                                self.index[word] = {key: [1, 3, 0]}  # List order: {docID: [freq, type, tf-idf]}
                 except TypeError:
                     pass
 
@@ -143,10 +143,10 @@ class InvertedIndex:
                     # TODO: UPDATE FREQUENCY PROPERLY (is this correct?)
                     for word in text_tokens:
                         if word not in self.stopwords:
-                            if word in self.index and key in self.index[word][0]:  # increment frequency in this document
-                                self.index[word][0][key] += 1
+                            if word in self.index and key in self.index[word]:  # increment frequency in this document
+                                self.index[word][key][0] += 1
                             else:  # create new entry for this document
-                                self.index[word] = [{key: 1}, 2, 0]  # List order: [{docID: freq}, type, tf-idf]
+                                self.index[word] = {key: [1, 2, 0]}  # List order: {docID: [freq, type, tf-idf]}
                 except TypeError:
                     pass
 
@@ -166,10 +166,9 @@ class InvertedIndex:
             # TODO: UPDATE FREQUENCY PROPERLY (is this correct?)
             for word in text_tokens:
                 if word not in self.stopwords:
-                    if word in self.index and key in self.index[word][0]:  # increment frequency in this document
-                        self.index[word][0][key] += 1
-                        pass
+                    if word in self.index and key in self.index[word]:  # increment frequency in this document
+                        self.index[word][key][0] += 1
                     else:  # create new entry for this document
-                        self.index[word] = [{key: 1}, 1, 0]  # List order: [{docID: freq}, type, tf-idf]
+                        self.index[word] = {key: [1, 1, 0]}  # List order: {docID: [freq, type, tf-idf]}
 
         print(self.index)
