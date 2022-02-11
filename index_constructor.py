@@ -4,6 +4,7 @@ import nltk.corpus
 from string import punctuation
 import json
 from bs4 import BeautifulSoup
+import numpy as np
 
 # remove stop words
 # lemmatize remaining tokens
@@ -189,12 +190,15 @@ class InvertedIndex:
                             self.index[word][key] = [1, 1, 0]
                     else:  # haven't seen this word before
                         self.index[word] = {key: [1, 1, 0]} # List order: {docID: [freq, type, tf-idf]}
-        print(self.index)
 
     def calculate_tf_idf(self):
         for word in self.index:
             for doc in self.index[word]:
-                pass
+                self.index[word][doc][2] = ((1 + np.log10(self.index[word][doc][0])) * 
+                                            (np.log10(self.document_count)/len(self.index[word])))
+                
                 # self.index[word][doc][0] # term frequency in this document
                 # self.document_count # N
-                # len
+                # len(self.index[word]) # length of posting list
+                # self.index[word][doc][2] # assign tf-idf
+        print(self.index)
