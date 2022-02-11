@@ -12,17 +12,6 @@ import numpy as np
 # store tf-idf
 # note words in title, bold and heading (h1, h2, h3)
 
-def remove_stopwords():
-    pass
-def lemmatize():
-    pass
-def get_tf_idf():
-    # tf = (count of term in document) / (total word count of document)
-    # idf = (total number of documents in corpus) / (count of documents where term appears)
-    # tf-idf = tf * idf
-    pass
-
-
 class InvertedIndex:
     def __init__(self):
         self.document_count = 0
@@ -37,7 +26,6 @@ class InvertedIndex:
                 self.stopwords.append(line.rstrip())
 
     def read_corpus(self, corpus_path):
-        nltk_words = set(nltk.corpus.words.words())
         # get the bookkeeping file
         with open(corpus_path + '\\bookkeeping.json') as f:
             bookkeeping = json.load(f)

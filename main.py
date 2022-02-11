@@ -1,3 +1,4 @@
+from enum import unique
 from operator import inv
 import sys
 import json
@@ -17,20 +18,44 @@ if __name__ == "__main__":
         index = json.load(file)
         index_dict = json.loads(index)
         #print(index_dict["irvine"])
+    
+    with open(r'.\WEBPAGES_RAW\bookkeeping.json') as b:
+        bookkeeping = json.load(b)
+
+    # unique documents
+    unique_words = 0
+    unique_docs = set()
+    for word in index_dict:
+        unique_words += 1
+        for doc in index_dict[word]:
+            unique_docs.add(doc)
+
+    print('Searching ' + str(unique_words) + ' words in ' + str(len(unique_docs)) + ' documents.')
+
+    print('Size of index (KB): ' + str(sys.getsizeof(index_dict) / 1000))
+
 
 
     # Get user input
-    while True:
+    user_quit = False
+    while not user_quit:
         query = input("Enter query: ")
 
         # Exit word
         if query == "close search":
-            break
+            user_quit = True
 
         lower_query = query.lower()
 
         # We have index, now we can look up the query/word on the index
-        print(index_dict[lower_query])
+        # print(index_dict[lower_query])
+        if not user_quit:
+            result_count = 0
+            for result in index_dict[lower_query]:
+                if result in bookkeeping and result_count < 20:
+                    print(bookkeeping[result])
+                    result_count += 1
+            print(str(result_count) + ' results.')
 
 # remove stop words
 # lemmatize remaining tokens
