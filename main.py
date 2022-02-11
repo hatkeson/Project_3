@@ -16,16 +16,21 @@ if __name__ == "__main__":
     with open('index_text_file.json') as file:
         index = json.load(file)
         index_dict = json.loads(index)
-        print(index_dict["informatics"])
+        #print(index_dict["irvine"])
 
 
-    # # Get user input
-    # while True:
-    #     query = input("Enter query: ")
-    #     print(query)
-    #
-    #     # We have index, now we can look up the query/word on the index
-    #     print(index[query])
+    # Get user input
+    while True:
+        query = input("Enter query: ")
+
+        # Exit word
+        if query == "close search":
+            break
+
+        lower_query = query.lower()
+
+        # We have index, now we can look up the query/word on the index
+        print(index_dict[lower_query])
 
 # remove stop words
 # lemmatize remaining tokens
