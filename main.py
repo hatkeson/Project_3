@@ -15,7 +15,8 @@ if __name__ == "__main__":
     # Get index dict from json file
     with open('index_text_file.json') as file:
         index = json.load(file)
-        #print(index[0])
+        index_dict = json.loads(index)
+        print(index_dict["informatics"])
 
 
     # # Get user input
