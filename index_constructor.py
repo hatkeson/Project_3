@@ -47,8 +47,8 @@ class InvertedIndex:
         # second number is file
         for key in bookkeeping:
             folder_file = key.split('/')
-            if folder_file[0] != '0':   # hardcoded limit, remove when ready for full corpus
-                break
+            # if folder_file[0] != '0':   # hardcoded limit, remove when ready for full corpus
+            #     break
             with open(corpus_path + '\\' + folder_file[0] + '\\' + folder_file[1], 'rb') as f:
                 self.document_count += 1
                 page = BeautifulSoup(f, 'html.parser')
@@ -191,6 +191,7 @@ class InvertedIndex:
                     else:  # haven't seen this word before
                         self.index[word] = {key: [1, 1, 0]} # List order: {docID: [freq, type, tf-idf]}
 
+
     def calculate_tf_idf(self):
         for word in self.index:
             for doc in self.index[word]:
@@ -201,4 +202,10 @@ class InvertedIndex:
                 # self.document_count # N
                 # len(self.index[word]) # length of posting list
                 # self.index[word][doc][2] # assign tf-idf
-        print(self.index)
+        # print(self.index)
+
+    def write_to_json(self):
+        # Write the index into a json file
+        json_string = json.dumps(self.index)
+        with open('index_text_file.json', 'w') as outFile:
+            json.dump(json_string, outFile)

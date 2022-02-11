@@ -9,6 +9,8 @@ if __name__ == "__main__":
     inv_idx = InvertedIndex()
     inv_idx.read_corpus(sys.argv[1])
     inv_idx.calculate_tf_idf()
+    inv_idx.write_to_json()
+
 
 # remove stop words
 # lemmatize remaining tokens
