@@ -8,6 +8,7 @@ if __name__ == "__main__":
     # get directory of the webpages file, feed to constructor
     inv_idx = InvertedIndex()
     inv_idx.read_corpus(sys.argv[1])
+    inv_idx.calculate_tf_idf()
 
 # remove stop words
 # lemmatize remaining tokens

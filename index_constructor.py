@@ -26,9 +26,9 @@ class InvertedIndex:
     def __init__(self):
         self.document_count = 0
         self.index = {}     # only for inverted index
-        self.title_index = {}
-        self.heading_index = {}
-        self.bold_index = {}
+        self.title = []
+        self.heading = []
+        self.bold = []
 
         self.stopwords = []
         with open('stopwords.txt') as file:
@@ -49,6 +49,7 @@ class InvertedIndex:
             if folder_file[0] != '0':   # hardcoded limit, remove when ready for full corpus
                 break
             with open(corpus_path + '\\' + folder_file[0] + '\\' + folder_file[1], 'rb') as f:
+                self.document_count += 1
                 page = BeautifulSoup(f, 'html.parser')
 
             tokenizer = WhitespaceTokenizer()
@@ -63,7 +64,7 @@ class InvertedIndex:
             if title and not title.string == "":
                 try:
                     text_tokens = tokenizer.tokenize(title.string)
-                    text_tokens = [w for w in text_tokens if w.lower() in nltk_words]
+                    text_tokens = [w for w in text_tokens if w.isalpha() and w.isascii()]
                     text_tokens_len = len(text_tokens)
                     for i in range(0, text_tokens_len):
                         text_tokens[i] = lemmatizer.lemmatize(str.lower(text_tokens[i].strip(punctuation)))
@@ -71,17 +72,20 @@ class InvertedIndex:
                     # TODO: UPDATE FREQUENCY PROPERLY (is this correct?)
                     for word in text_tokens:
                         if word not in self.stopwords:
-                            if word in self.index and key in self.index[word]:  # increment frequency in this document
-                                self.index[word][key][0] += 1
-                            else:  # create new entry for this document
-                                self.index[word] = {key: [1, 4, 0]}  # List order: {docID: [freq, type, tf-idf]}
+                            if word in self.index:  # we've seen this word before
+                                if key in self.index[word]: # in this document
+                                    self.index[word][key][0] += 1
+                                else: # seen word in other document
+                                    self.index[word][key] = [1, 4, 0]
+                            else: # haven't seen this word before
+                                self.index[word] = {key: [1, 4, 0]} # List order: {docID: [freq, type, tf-idf]}
                 except TypeError:
                     pass
 
             if heading_1 and not heading_1.string == "":
                 try:
                     text_tokens = tokenizer.tokenize(heading_1.string)
-                    text_tokens = [w for w in text_tokens if w.lower() in nltk_words]
+                    text_tokens = [w for w in text_tokens if w.isalpha() and w.isascii()]
                     text_tokens_len = len(text_tokens)
                     for i in range(0, text_tokens_len):
                         text_tokens[i] = lemmatizer.lemmatize(str.lower(text_tokens[i].strip(punctuation)))
@@ -89,17 +93,20 @@ class InvertedIndex:
                     # TODO: UPDATE FREQUENCY PROPERLY (is this correct?)
                     for word in text_tokens:
                         if word not in self.stopwords:
-                            if word in self.index and key in self.index[word]:  # increment frequency in this document
-                                self.index[word][key][0] += 1
-                            else:  # create new entry for this document
-                                self.index[word] = {key: [1, 3, 0]}  # List order: {docID: [freq, type, tf-idf]}
+                            if word in self.index:  # we've seen this word before
+                                if key in self.index[word]: # in this document
+                                    self.index[word][key][0] += 1
+                                else: # seen word in other document
+                                    self.index[word][key] = [1, 3, 0]
+                            else: # haven't seen this word before
+                                self.index[word] = {key: [1, 3, 0]} # List order: {docID: [freq, type, tf-idf]}
                 except TypeError:
                     pass
 
             if heading_2 and not heading_2.string == "":
                 try:
                     text_tokens = tokenizer.tokenize(heading_2.string)
-                    text_tokens = [w for w in text_tokens if w.lower() in nltk_words]
+                    text_tokens = [w for w in text_tokens if w.isalpha() and w.isascii()]
                     text_tokens_len = len(text_tokens)
                     for i in range(0, text_tokens_len):
                         text_tokens[i] = lemmatizer.lemmatize(str.lower(text_tokens[i].strip(punctuation)))
@@ -107,17 +114,20 @@ class InvertedIndex:
                     # TODO: UPDATE FREQUENCY PROPERLY (is this correct?)
                     for word in text_tokens:
                         if word not in self.stopwords:
-                            if word in self.index and key in self.index[word]:  # increment frequency in this document
-                                self.index[word][key][0] += 1
-                            else:  # create new entry for this document
-                                self.index[word] = {key: [1, 3, 0]}  # List order: {docID: [freq, type, tf-idf]}
+                            if word in self.index:  # we've seen this word before
+                                if key in self.index[word]: # in this document
+                                    self.index[word][key][0] += 1
+                                else: # seen word in other document
+                                    self.index[word][key] = [1, 3, 0]
+                            else: # haven't seen this word before
+                                self.index[word] = {key: [1, 3, 0]} # List order: {docID: [freq, type, tf-idf]}
                 except TypeError:
                     pass
 
             if heading_3 and not heading_3.string == "":
                 try:
                     text_tokens = tokenizer.tokenize(heading_3.string)
-                    text_tokens = [w for w in text_tokens if w.lower() in nltk_words]
+                    text_tokens = [w for w in text_tokens if w.isalpha() and w.isascii()]
                     text_tokens_len = len(text_tokens)
                     for i in range(0, text_tokens_len):
                         text_tokens[i] = lemmatizer.lemmatize(str.lower(text_tokens[i].strip(punctuation)))
@@ -125,17 +135,20 @@ class InvertedIndex:
                     # TODO: UPDATE FREQUENCY PROPERLY (is this correct?)
                     for word in text_tokens:
                         if word not in self.stopwords:
-                            if word in self.index and key in self.index[word]:  # increment frequency in this document
-                                self.index[word][key][0] += 1
-                            else:  # create new entry for this document
-                                self.index[word] = {key: [1, 3, 0]}  # List order: {docID: [freq, type, tf-idf]}
+                            if word in self.index:  # we've seen this word before
+                                if key in self.index[word]: # in this document
+                                    self.index[word][key][0] += 1
+                                else: # seen word in other document
+                                    self.index[word][key] = [1, 3, 0]
+                            else: # haven't seen this word before
+                                self.index[word] = {key: [1, 3, 0]} # List order: {docID: [freq, type, tf-idf]}
                 except TypeError:
                     pass
 
             if bold and not bold.string == "":
                 try:
                     text_tokens = tokenizer.tokenize(bold.string)
-                    text_tokens = [w for w in text_tokens if w.lower() in nltk_words]
+                    text_tokens = [w for w in text_tokens if w.isalpha() and w.isascii()]
                     text_tokens_len = len(text_tokens)
                     for i in range(0, text_tokens_len):
                         text_tokens[i] = lemmatizer.lemmatize(str.lower(text_tokens[i].strip(punctuation)))
@@ -143,10 +156,13 @@ class InvertedIndex:
                     # TODO: UPDATE FREQUENCY PROPERLY (is this correct?)
                     for word in text_tokens:
                         if word not in self.stopwords:
-                            if word in self.index and key in self.index[word]:  # increment frequency in this document
-                                self.index[word][key][0] += 1
-                            else:  # create new entry for this document
-                                self.index[word] = {key: [1, 2, 0]}  # List order: {docID: [freq, type, tf-idf]}
+                            if word in self.index:  # we've seen this word before
+                                if key in self.index[word]: # in this document
+                                    self.index[word][key][0] += 1
+                                else: # seen word in other document
+                                    self.index[word][key] = [1, 2, 0]
+                            else: # haven't seen this word before
+                                self.index[word] = {key: [1, 2, 0]} # List order: {docID: [freq, type, tf-idf]}
                 except TypeError:
                     pass
 
@@ -154,7 +170,7 @@ class InvertedIndex:
             # Whitespace tokenizer - keep contractions because they're in stopwords
             text_tokens = tokenizer.tokenize(page.get_text())
             # delete non-english words
-            text_tokens = [w for w in text_tokens if w.lower() in nltk_words]
+            text_tokens = [w for w in text_tokens if w.isalpha() and w.isascii()]
 
             # lemmatize - must strip leading and trailing punctuation because whitespace
             # tokenizer leaves them in
@@ -166,9 +182,19 @@ class InvertedIndex:
             # TODO: UPDATE FREQUENCY PROPERLY (is this correct?)
             for word in text_tokens:
                 if word not in self.stopwords:
-                    if word in self.index and key in self.index[word]:  # increment frequency in this document
-                        self.index[word][key][0] += 1
-                    else:  # create new entry for this document
-                        self.index[word] = {key: [1, 1, 0]}  # List order: {docID: [freq, type, tf-idf]}
-
+                    if word in self.index:  # we've seen this word before
+                        if key in self.index[word]: # in this document
+                            self.index[word][key][0] += 1
+                        else: # seen word in other document
+                            self.index[word][key] = [1, 1, 0]
+                    else:  # haven't seen this word before
+                        self.index[word] = {key: [1, 1, 0]} # List order: {docID: [freq, type, tf-idf]}
         print(self.index)
+
+    def calculate_tf_idf(self):
+        for word in self.index:
+            for doc in self.index[word]:
+                pass
+                # self.index[word][doc][0] # term frequency in this document
+                # self.document_count # N
+                # len
