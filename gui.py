@@ -16,7 +16,7 @@ def search():
         for result in index_dict[q]:
             if result in bookkeeping and result_count < 20:
                 print(bookkeeping[result])
-                results_list.insert('', 'end', text=bookkeeping[result])
+                results_list.insert('', 'end', text = '', values=(bookkeeping[result])) # replace text with Title
                 result_count += 1
         print(str(result_count) + ' results.')
 
@@ -24,7 +24,7 @@ with open('index_text_file.json') as file:
     index = json.load(file)
     index_dict = json.loads(index)
 
-with open(r'.\WEBPAGES_RAW\bookkeeping.json') as b:
+with open('D:\\121 Project 3\webpages\WEBPAGES_RAW\\bookkeeping.json') as b:
     bookkeeping = json.load(b)
 
 root = Tk() # creates window
@@ -41,7 +41,9 @@ entry.bind("<Return>", search_return_key) # user triggers search function by pre
 search_button = ttk.Button(frm, text="Search", command=search) # command is pointer to function
 search_button.grid(column=1, row=0) # put it in cell (0,1)
 
-results_list = ttk.Treeview(frm, height=20) # where results will be displayed
+results_list = ttk.Treeview(frm, columns=['URL'], height=20) # where results will be displayed
+results_list.heading('#0', text='Title', anchor=tk.W)
+results_list.heading('URL', text='URL', anchor=tk.W)
 results_list.grid(column=0, row=2) # put it in cell (2,0)
 
 root.mainloop() # run the window
