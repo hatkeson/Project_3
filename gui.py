@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import ttk
 import webbrowser
 import json
+import ranking
 
 def search_return_key(event):
     search()
@@ -12,16 +13,24 @@ def search():
             results_list.delete(item)
     q = query_var.get()
     if q:
-        # get ranked result dict here
+        if ' ' not in q:
+            result_count = 0
+            for result in index_dict[q]:
+                if result in bookkeeping and result_count < 20:
+                    print(bookkeeping[result])
+                    results_list.insert('', 'end', text = '', values=(bookkeeping[result])) # replace text with Title
+                    result_count += 1
+            #print(str(result_count) + ' results.')
+        else:
+            # get ranked result dict here
+            doc_list = ranking.ranked_results(q, index_dict)
+            result_count = 0
+            for result in doc_list:
+                if result[0] in bookkeeping and result_count < 20:
+                    print(bookkeeping[result[0]])
+                    results_list.insert('', 'end', text='', values=(bookkeeping[result[0]]))  # replace text with Title
+                    result_count += 1
 
-
-        result_count = 0
-        for result in index_dict[q]:
-            if result in bookkeeping and result_count < 20:
-                print(bookkeeping[result])
-                results_list.insert('', 'end', text = '', values=(bookkeeping[result])) # replace text with Title
-                result_count += 1
-        print(str(result_count) + ' results.')
 
 with open('index_text_file.json') as file:
     index = json.load(file)
