@@ -4,6 +4,7 @@ from tkinter import ttk
 import webbrowser
 import json
 import ranking
+import copy
 
 def search_return_key(event):
     search()
@@ -14,13 +15,32 @@ def search():
     q = query_var.get()
     if q:
         if ' ' not in q:
+            # rank single-term queries here
+            doc_dict = copy.deepcopy(index_dict[q])
+            doc_list = list(doc_dict)
+            # modify tf-idf score based on type of text
+            for doc in doc_list:
+                multiplier = 1
+                if doc_dict[doc][1] == 2:
+                    multiplier = 1.5
+                elif doc_dict[doc][1] == 3:
+                    multiplier = 2
+                elif doc_dict[doc][1] == 4:
+                    multiplier = 2.5
+                doc_dict[doc][2] = doc_dict[doc][2] * multiplier
+            #print(doc_dict)
+            #print(index_dict[q])
+
+            sorted_docs = sorted(doc_dict.items(), key=lambda item: item[1][2], reverse=True)
+
             result_count = 0
-            for result in index_dict[q]:
-                if result in bookkeeping and result_count < 20:
-                    print(bookkeeping[result])
-                    results_list.insert('', 'end', text = '', values=(bookkeeping[result])) # replace text with Title
+            for result in sorted_docs:
+                if result[0] in bookkeeping and result_count < 20:
+                    #print(bookkeeping[result[0]])
+                    results_list.insert('', 'end', text = '', values=(bookkeeping[result[0]])) # replace text with Title
                     result_count += 1
             #print(str(result_count) + ' results.')
+
         else:
             # get ranked result dict here
             doc_list = ranking.ranked_results(q, index_dict)

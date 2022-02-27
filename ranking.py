@@ -1,20 +1,18 @@
 import numpy as np
+import copy
 
 def ranked_results(query, index_dict):
     # Assuming query length has to be > 0
-    if ' ' not in query: # if single term query
-        doc_dict = index_dict[query]
-        sorted_docs = sorted(doc_dict.items(), key=lambda item:item[1][2], reverse=True)
-        return sorted_docs
-
-    elif ' ' in query:
+    if ' ' in query:
         str_set = set(query.split())
         d_vector = []
         q_vector = []
         doc_dict = {}   # dictionary of resulting docs
         doc_set = set() # set of resulting docs
         # Calculate d and q of each term in query
-        # TODO: remember type of the word
+        # TODO: remember type of the word for scoring [DONE]
+        # TODO: ^ how would type be incorporated in queries with >= 2 terms?
+        # TODO: confirm if formula for q value is correct
         # get q_vector first
         for word in str_set:
             for doc in list(index_dict[word]):
@@ -27,7 +25,14 @@ def ranked_results(query, index_dict):
         for doc in doc_set:
             for word in str_set:
                 if word in index_dict and doc in index_dict[word]:
-                    d_vector.append(index_dict[word][doc][2])
+                    multiplier = 1
+                    if index_dict[word][doc][1] == 2:
+                        multiplier = 1.5
+                    elif index_dict[word][doc][1] == 3:
+                        multiplier = 2
+                    elif index_dict[word][doc][1] == 4:
+                        multiplier = 2.5
+                    d_vector.append(index_dict[word][doc][2] * multiplier)
                 else:
                     d_vector.append(0)
             doc_dict[doc] = cosine_similarity(q_vector, d_vector)
@@ -35,30 +40,6 @@ def ranked_results(query, index_dict):
 
         return sorted(doc_dict.items(), key=lambda item:item[1], reverse=True)
 
-
-
-
-        # i = 0   # i is the order of the word in the query (to make sure q and d align)
-        # for word in str_set:
-        #     d_vector.clear()
-        #     doc_list = list(result_dict[word])
-        #     visited = set()
-        #     for doc in doc_list:
-        #         for sub_word in str_set:
-        #             if sub_word != word and sub_word in result_dict:
-        #                 if doc not in visited and doc in result_dict[sub_word]:
-        #                     d_vector.append(index_dict[sub_word][doc][2])
-        #                 elif doc not in visited and doc not in result_dict[sub_word]:
-        #                     d_vector.append(0)
-        #             elif sub_word != word and sub_word not in result_dict:
-        #                 d_vector.append(0)
-        #
-        #         result_dict[word][doc][2] = cosine_similarity(q_vector, d_vector)
-        #         visited.add(doc)
-
-
-
-        
 
 def cosine_similarity(q,d):
     # q is a vector of the tf-idf of each term in the query
