@@ -12,6 +12,9 @@ def search():
             results_list.delete(item)
     q = query_var.get()
     if q:
+        # get ranked result dict here
+
+
         result_count = 0
         for result in index_dict[q]:
             if result in bookkeeping and result_count < 20:
