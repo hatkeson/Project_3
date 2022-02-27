@@ -2,12 +2,12 @@ import numpy as np
 
 def ranked_results(query, index_dict):
     # Assuming query length has to be > 0
-    if len(query) == 1: # if single term query
+    if ' ' not in query: # if single term query
         doc_dict = index_dict[query]
         sorted_docs = sorted(doc_dict.items(), key=lambda item:item[1][2], reverse=True)
         return sorted_docs
 
-    elif len(query) > 1:
+    elif ' ' in query:
         str_set = set(query.split())
         d_vector = []
         q_vector = []
@@ -31,7 +31,9 @@ def ranked_results(query, index_dict):
                 else:
                     d_vector.append(0)
             doc_dict[doc] = cosine_similarity(q_vector, d_vector)
-        return sorted(doc_dict.items(), key=lambda item:item, reverse=True)
+            d_vector.clear()
+
+        return sorted(doc_dict.items(), key=lambda item:item[1], reverse=True)
 
 
 
@@ -61,13 +63,15 @@ def ranked_results(query, index_dict):
 def cosine_similarity(q,d):
     # q is a vector of the tf-idf of each term in the query
     # d is a vector of the tf-idf of each term in the document
+    print(q)
+    print(d)
     return (np.dot(q,d)) / (np.sqrt(np.dot(q,q)) * np.sqrt(np.dot(d,d)))
 
-q = [1.09, 2.00]
-d1 = [1.75, 2.93]
-d2 = [3.49, 2.92]
-d3 = [1.09, 1.13]
-
-print(cosine_similarity(q,d1))
-print(cosine_similarity(q,d2))
-print(cosine_similarity(q,d3))
+# q = [1.09, 2.00]
+# d1 = [1.75, 2.93]
+# d2 = [3.49, 2.92]
+# d3 = [1.09, 1.13]
+#
+# print(cosine_similarity(q,d1))
+# print(cosine_similarity(q,d2))
+# print(cosine_similarity(q,d3))
