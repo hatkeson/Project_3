@@ -1,6 +1,7 @@
 from tkinter import *
 import tkinter as tk
 from tkinter import ttk
+from bs4 import BeautifulSoup
 import webbrowser
 import json
 import ranking
@@ -12,7 +13,7 @@ def search_return_key(event):
 def search():
     for item in results_list.get_children():
             results_list.delete(item)
-    q = query_var.get()
+    q = query_var.get().lower()
     if q:
         if ' ' not in q:
             # rank single-term queries here
@@ -36,8 +37,20 @@ def search():
             result_count = 0
             for result in sorted_docs:
                 if result[0] in bookkeeping and result_count < 20:
+
+                    with open(r'C:\Users\User\Documents\CS 121\Project_3\WEBPAGES_RAW' + '\\' + result[0], 'rb') as f:
+                        page = BeautifulSoup(f, 'html.parser')
+                    try:
+                        title = page.find('title').string.strip()
+                        headings = ['h1','h2','h3','h4','h5','h6', 'strong']
+                        i = 0
+                        while not title:
+                            title = page.find(headings[i]).string.strip()
+                            i += 1
                     #print(bookkeeping[result[0]])
-                    results_list.insert('', 'end', text = '', values=(bookkeeping[result[0]])) # replace text with Title
+                        results_list.insert('', 'end', text = title, values=(bookkeeping[result[0]]))
+                    except AttributeError:
+                        results_list.insert('', 'end', text = 'Untitled Document', values=(bookkeeping[result[0]]))
                     result_count += 1
             #print(str(result_count) + ' results.')
 
@@ -47,16 +60,32 @@ def search():
             result_count = 0
             for result in doc_list:
                 if result[0] in bookkeeping and result_count < 20:
-                    print(bookkeeping[result[0]])
-                    results_list.insert('', 'end', text='', values=(bookkeeping[result[0]]))  # replace text with Title
+                    with open(r'C:\Users\User\Documents\CS 121\Project_3\WEBPAGES_RAW' + '\\' + result[0], 'rb') as f:
+                        page = BeautifulSoup(f, 'html.parser')
+                    try:
+                        title = page.find('title').string.strip()
+                        headings = ['h1','h2','h3','h4','h5','h6', 'strong']
+                        i = 0
+                        while not title:
+                            title = page.find(headings[i]).string.strip()
+                            i += 1
+                    #print(bookkeeping[result[0]])
+                        results_list.insert('', 'end', text = title, values=(bookkeeping[result[0]]))
+                    except AttributeError:
+                        results_list.insert('', 'end', text = 'Untitled Document', values=(bookkeeping[result[0]]))
                     result_count += 1
 
+def url_click(event):
+    input_id = results_list.selection()
+    input_item = results_list.item(input_id,)['values'][0]
+    print(input_item)
+    webbrowser.open('{}'.format(input_item))
 
 with open('index_text_file.json') as file:
     index = json.load(file)
     index_dict = json.loads(index)
 
-with open('D:\\121 Project 3\webpages\WEBPAGES_RAW\\bookkeeping.json') as b:
+with open(r'C:\Users\User\Documents\CS 121\Project_3\WEBPAGES_RAW\bookkeeping.json') as b:
     bookkeeping = json.load(b)
 
 root = Tk() # creates window
@@ -66,16 +95,19 @@ frm = ttk.Frame(root, padding=10) # creates frame inside window
 frm.grid() # we want elements laid out in a grid (other option is "pack")
 
 query_var = tk.StringVar() # this stores user input
-entry = ttk.Entry(frm, textvariable=query_var) # text box where user enters query
+entry = ttk.Entry(frm, width=50, textvariable=query_var) # text box where user enters query
 entry.grid(column=0, row=0) # we'll place it in cell (0,0) in the grid
 entry.bind("<Return>", search_return_key) # user triggers search function by pressing enter
 
 search_button = ttk.Button(frm, text="Search", command=search) # command is pointer to function
-search_button.grid(column=1, row=0) # put it in cell (0,1)
+search_button.grid(column=0, row=1) # put it in cell (0,1)
 
 results_list = ttk.Treeview(frm, columns=['URL'], height=20) # where results will be displayed
 results_list.heading('#0', text='Title', anchor=tk.W)
+results_list.column('#0', minwidth=0, width=500)
 results_list.heading('URL', text='URL', anchor=tk.W)
+results_list.column('URL', minwidth=0, width=500)
 results_list.grid(column=0, row=2) # put it in cell (2,0)
+results_list.bind("<Double-1>", url_click)
 
 root.mainloop() # run the window
