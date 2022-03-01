@@ -37,21 +37,26 @@ def search():
             result_count = 0
             for result in sorted_docs:
                 if result[0] in bookkeeping and result_count < 20:
-
                     with open(r'C:\Users\User\Documents\CS 121\Project_3\WEBPAGES_RAW' + '\\' + result[0], 'rb') as f:
                         page = BeautifulSoup(f, 'html.parser')
                     try:
                         title = page.find('title').string.strip()
-                        headings = ['h1','h2','h3','h4','h5','h6', 'strong']
+                        headings = ['h1','h2','h3','h4','h5','h6','strong']
                         i = 0
                         while not title:
                             title = page.find(headings[i]).string.strip()
                             i += 1
-                    #print(bookkeeping[result[0]])
-                        results_list.insert('', 'end', text = title, values=(bookkeeping[result[0]]))
-                    except AttributeError:
-                        results_list.insert('', 'end', text = 'Untitled Document', values=(bookkeeping[result[0]]))
-                    result_count += 1
+                    except AttributeError: # no valid title or heading
+                            title = 'Untitled Document'
+                    try:
+                        desc = page.find('meta', attrs = {'name':'description'})['content']
+                    except TypeError: # no meta description
+                        try:
+                            desc = page.find('p').text.strip().splitlines()[0]
+                        except: # no text in the page
+                            desc = 'Description Unavailable'
+                    results_list.insert('', 'end', text = title, values=(desc, bookkeeping[result[0]]))
+                result_count += 1
             #print(str(result_count) + ' results.')
 
         else:
@@ -64,20 +69,26 @@ def search():
                         page = BeautifulSoup(f, 'html.parser')
                     try:
                         title = page.find('title').string.strip()
-                        headings = ['h1','h2','h3','h4','h5','h6', 'strong']
+                        headings = ['h1','h2','h3','h4','h5','h6','strong']
                         i = 0
                         while not title:
                             title = page.find(headings[i]).string.strip()
                             i += 1
-                    #print(bookkeeping[result[0]])
-                        results_list.insert('', 'end', text = title, values=(bookkeeping[result[0]]))
-                    except AttributeError:
-                        results_list.insert('', 'end', text = 'Untitled Document', values=(bookkeeping[result[0]]))
+                    except AttributeError: # no valid title or heading
+                            title = 'Untitled Document'
+                    try:
+                        desc = page.find('meta', attrs = {'name':'description'})['content']
+                    except TypeError: # no meta description
+                        try:
+                            desc = page.find('p').text.strip().splitlines()[0]
+                        except: # no text in the page
+                            desc = 'Description Unavailable'
+                    results_list.insert('', 'end', text = title, values=(desc, bookkeeping[result[0]]))
                     result_count += 1
 
 def url_click(event):
     input_id = results_list.selection()
-    input_item = results_list.item(input_id,)['values'][0]
+    input_item = results_list.item(input_id,)['values'][1]
     print(input_item)
     webbrowser.open('{}'.format(input_item))
 
@@ -102,11 +113,13 @@ entry.bind("<Return>", search_return_key) # user triggers search function by pre
 search_button = ttk.Button(frm, text="Search", command=search) # command is pointer to function
 search_button.grid(column=0, row=1) # put it in cell (0,1)
 
-results_list = ttk.Treeview(frm, columns=['URL'], height=20) # where results will be displayed
+results_list = ttk.Treeview(frm, columns=['Description','URL'], height=20) # where results will be displayed
 results_list.heading('#0', text='Title', anchor=tk.W)
-results_list.column('#0', minwidth=0, width=500)
+results_list.column('#0', minwidth=0, width=300)
+results_list.heading('Description', text='Description', anchor=tk.W)
+results_list.column('Description', minwidth=0, width=300)
 results_list.heading('URL', text='URL', anchor=tk.W)
-results_list.column('URL', minwidth=0, width=500)
+results_list.column('URL', minwidth=0, width=300)
 results_list.grid(column=0, row=2) # put it in cell (2,0)
 results_list.bind("<Double-1>", url_click)
 
