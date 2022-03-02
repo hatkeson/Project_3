@@ -23,6 +23,7 @@ class InvertedBigramIndex:
         self.bold = []
         self.bigrams = []
         self.stopwords = []
+        self.counter = 0
 
         with open('stopwords.txt') as file:
             for line in file:
@@ -37,6 +38,8 @@ class InvertedBigramIndex:
         # first number is folder
         # second number is file
         for key in bookkeeping:
+            # if self.counter <50:
+
             folder_file = key.split('/')
             # if folder_file[0] != '0':   # hardcoded limit, remove when ready for full corpus
             #     break
@@ -224,10 +227,6 @@ class InvertedBigramIndex:
                     self.index[words] = {key: [1, 1, 0]}  # List order: {docID: [freq, type, tf-idf]}
 
 
-            print(self.index)
-
-
-
 
     def calculate_tf_idf(self):
         for word in self.index:
@@ -238,9 +237,13 @@ class InvertedBigramIndex:
 
     def write_to_json(self):
         # Write the index into a json file
-        json_string = json.dumps(self.index)
-        with open('bigram_index_text_file.json.json', 'w') as outFile:
-            json.dump(json_string, outFile)
+        # json_string = json.dumps(self.index)
+        # with open('bigram_index_text_file.json.json', 'w') as outFile:
+        #     json.dump(json_string, outFile)
+
+        with open('bigram_index_text_file.json', 'w') as f:
+            for chunk in json.JSONEncoder().iterencode(self.index):
+                f.write(chunk)
 
     def get_bigrams(self, tokens):
         bigrams = ngrams(tokens, 2)
@@ -252,29 +255,3 @@ class InvertedBigramIndex:
                 token.remove(word)
 
         return token
-
-#
-# test = InvertedBigramIndex()
-# test.read_corpus()
-
-
-#reference from https://stackoverflow.com/questions/21844546/forming-bigrams-of-words-in-list-of-sentences-with-python
-# text = ['cant railway station', 'citadel hotel', 'police stn']
-# for line in text:
-#     token = nltk.word_tokenize(line)
-#     bigram = list(ngrams(token, 2))
-
-
-# def get_bigrams(myString):
-#     tokenizer = WordPunctTokenizer()
-#     tokens = tokenizer.tokenize(myString)
-#     stemmer = PorterStemmer()
-#     bigram_finder = BigramCollocationFinder.from_words(tokens)
-#     bigrams = bigram_finder.nbest(BigramAssocMeasures.chi_sq, 500)
-#
-#     for bigram_tuple in bigrams:
-#         x = "%s %s" % bigram_tuple
-#         tokens.append(x)
-#
-#     result = [' '.join([stemmer.stem(w).lower() for w in x.split()]) for x in tokens if x.lower() not in stopwords.words('english') and len(x) > 8]
-#     return result
