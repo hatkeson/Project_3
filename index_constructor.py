@@ -41,6 +41,9 @@ class InvertedIndex:
                 self.document_count += 1
                 page = BeautifulSoup(f, 'html.parser')
 
+            for br in page.find_all("br"):
+                br.replace_with("\n")
+
             tokenizer = WhitespaceTokenizer()
             lemmatizer = WordNetLemmatizer()
 
@@ -197,3 +200,8 @@ class InvertedIndex:
         json_string = json.dumps(self.index)
         with open('index_text_file.json', 'w') as outFile:
             json.dump(json_string, outFile)
+
+idx = InvertedIndex()
+idx.read_corpus(r'C:\Users\User\Documents\CS 121\Project_3\WEBPAGES_RAW')
+idx.calculate_tf_idf()
+idx.write_to_json()

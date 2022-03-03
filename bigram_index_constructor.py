@@ -46,6 +46,9 @@ class InvertedBigramIndex:
             with open(corpus_path + '\\' + folder_file[0] + '\\' + folder_file[1], 'rb') as f:
                 self.document_count += 1
                 page = BeautifulSoup(f, 'html.parser')
+            
+            for br in page.find_all("br"):
+                br.replace_with("\n")
 
             tokenizer = WhitespaceTokenizer()
             lemmatizer = WordNetLemmatizer()

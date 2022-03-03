@@ -15,8 +15,45 @@ def search():
             results_list.delete(item)
     q = query_var.get().lower()
     if q:
-        if ' ' not in q:
-            # rank single-term queries here
+        q_list = q.split()
+        result_doc_list = list()
+
+        if len(q_list) > 2:
+            # rank bigram
+            doc_list = ranking.ranked_results(q, bindex_dict)
+            result_doc_list = result_doc_list.extend(doc_list)
+
+            # rank unigram if <20 bigram results
+            if len(result_doc_list) < 20:
+                doc_list = ranking.ranked_results(q, index_dict)
+                result_doc_list = result_doc_list.extend(doc_list)
+            
+        elif len(q_list) == 2:
+            # tf-idf bigram 
+            doc_dict = copy.deepcopy(bindex_dict[q])
+            doc_list = list(doc_dict)
+            # modify tf-idf score based on type of text
+            for doc in doc_list:
+                multiplier = 1
+                if doc_dict[doc][1] == 2:
+                    multiplier = 1.5
+                elif doc_dict[doc][1] == 3:
+                    multiplier = 2
+                elif doc_dict[doc][1] == 4:
+                    multiplier = 2.5
+                doc_dict[doc][2] = doc_dict[doc][2] * multiplier
+
+            sorted_docs = sorted(doc_dict.items(), key=lambda item: item[1][2], reverse=True)
+            result_doc_list = result_doc_list.append(sorted_docs)
+
+
+            # rank unigram if <20 bigram results
+            if len(result_doc_list) < 20:
+                doc_list = ranking.ranked_results(q, index_dict)
+                result_doc_list = result_doc_list.append(doc_list)
+
+        else:
+            # tf-idf with unigram
             doc_dict = copy.deepcopy(index_dict[q])
             doc_list = list(doc_dict)
             # modify tf-idf score based on type of text
@@ -33,9 +70,9 @@ def search():
             #print(index_dict[q])
 
             sorted_docs = sorted(doc_dict.items(), key=lambda item: item[1][2], reverse=True)
+            result_doc_list = sorted_docs
 
-            result_count = 0
-            for result in sorted_docs:
+        for result in result_doc_list:
                 if result[0] in bookkeeping and result_count < 20:
                     with open(r'C:\Users\User\Documents\CS 121\Project_3\WEBPAGES_RAW' + '\\' + result[0], 'rb') as f:
                         page = BeautifulSoup(f, 'html.parser')
@@ -52,39 +89,123 @@ def search():
                         desc = page.find('meta', attrs = {'name':'description'})['content']
                     except TypeError: # no meta description
                         try:
-                            desc = page.find('p').text.strip().splitlines()[0]
+                            desc = page.find('p').text.strip().splitlines()[0].strip()
                         except: # no text in the page
                             desc = 'Description Unavailable'
                     results_list.insert('', 'end', text = title, values=(desc, bookkeeping[result[0]]))
                 result_count += 1
             #print(str(result_count) + ' results.')
 
-        else:
-            # get ranked result dict here
-            doc_list = ranking.ranked_results(q, index_dict)
-            result_count = 0
-            for result in doc_list:
-                if result[0] in bookkeeping and result_count < 20:
-                    with open(r'C:\Users\User\Documents\CS 121\Project_3\WEBPAGES_RAW' + '\\' + result[0], 'rb') as f:
-                        page = BeautifulSoup(f, 'html.parser')
-                    try:
-                        title = page.find('title').string.strip()
-                        headings = ['h1','h2','h3','h4','h5','h6','strong']
-                        i = 0
-                        while not title:
-                            title = page.find(headings[i]).string.strip()
-                            i += 1
-                    except AttributeError: # no valid title or heading
-                            title = 'Untitled Document'
-                    try:
-                        desc = page.find('meta', attrs = {'name':'description'})['content']
-                    except TypeError: # no meta description
-                        try:
-                            desc = page.find('p').text.strip().splitlines()[0]
-                        except: # no text in the page
-                            desc = 'Description Unavailable'
-                    results_list.insert('', 'end', text = title, values=(desc, bookkeeping[result[0]]))
-                    result_count += 1
+
+
+
+
+
+
+
+
+
+
+        # if ' ' not in q:
+        #     # rank single-term queries here
+        #     doc_dict = copy.deepcopy(index_dict[q])
+        #     doc_list = list(doc_dict)
+        #     # modify tf-idf score based on type of text
+        #     for doc in doc_list:
+        #         multiplier = 1
+        #         if doc_dict[doc][1] == 2:
+        #             multiplier = 1.5
+        #         elif doc_dict[doc][1] == 3:
+        #             multiplier = 2
+        #         elif doc_dict[doc][1] == 4:
+        #             multiplier = 2.5
+        #         doc_dict[doc][2] = doc_dict[doc][2] * multiplier
+        #     #print(doc_dict)
+        #     #print(index_dict[q])
+
+        #     sorted_docs = sorted(doc_dict.items(), key=lambda item: item[1][2], reverse=True)
+
+        #     result_count = 0
+        #     for result in sorted_docs:
+        #         if result[0] in bookkeeping and result_count < 20:
+        #             with open(r'C:\Users\User\Documents\CS 121\Project_3\WEBPAGES_RAW' + '\\' + result[0], 'rb') as f:
+        #                 page = BeautifulSoup(f, 'html.parser')
+        #             try:
+        #                 title = page.find('title').string.strip()
+        #                 headings = ['h1','h2','h3','h4','h5','h6','strong']
+        #                 i = 0
+        #                 while not title:
+        #                     title = page.find(headings[i]).string.strip()
+        #                     i += 1
+        #             except AttributeError: # no valid title or heading
+        #                     title = 'Untitled Document'
+        #             try:
+        #                 desc = page.find('meta', attrs = {'name':'description'})['content']
+        #             except TypeError: # no meta description
+        #                 try:
+        #                     desc = page.find('p').text.strip().splitlines()[0].strip()
+        #                 except: # no text in the page
+        #                     desc = 'Description Unavailable'
+        #             results_list.insert('', 'end', text = title, values=(desc, bookkeeping[result[0]]))
+        #         result_count += 1
+        #     #print(str(result_count) + ' results.')
+
+        # else:
+        #     # check bigram index
+
+
+
+        #     doc_dict = copy.deepcopy(bindex_dict[q])
+        #     doc_list = list(doc_dict)
+        #     # modify tf-idf score based on type of text
+        #     for doc in doc_list:
+        #         multiplier = 1
+        #         if doc_dict[doc][1] == 2:
+        #             multiplier = 1.5
+        #         elif doc_dict[doc][1] == 3:
+        #             multiplier = 2
+        #         elif doc_dict[doc][1] == 4:
+        #             multiplier = 2.5
+        #         doc_dict[doc][2] = doc_dict[doc][2] * multiplier
+        #     #print(doc_dict)
+        #     #print(index_dict[q])
+
+        #     sorted_docs = sorted(doc_dict.items(), key=lambda item: item[1][2], reverse=True)
+
+
+
+
+
+
+
+
+
+
+        #     # get ranked result dict here
+        #     doc_list = ranking.ranked_results(q, index_dict) # ranking of one-gram index
+        #     result_count = 0
+        #     for result in doc_list:
+        #         if result[0] in bookkeeping and result_count < 20:
+        #             with open(r'C:\Users\User\Documents\CS 121\Project_3\WEBPAGES_RAW' + '\\' + result[0], 'rb') as f:
+        #                 page = BeautifulSoup(f, 'html.parser')
+        #             try:
+        #                 title = page.find('title').string.strip()
+        #                 headings = ['h1','h2','h3','h4','h5','h6','strong']
+        #                 i = 0
+        #                 while not title:
+        #                     title = page.find(headings[i]).string.strip()
+        #                     i += 1
+        #             except AttributeError: # no valid title or heading
+        #                     title = 'Untitled Document'
+        #             try:
+        #                 desc = page.find('meta', attrs = {'name':'description'})['content']
+        #             except TypeError: # no meta description
+        #                 try:
+        #                     desc = page.find('p').text.strip().splitlines()[0].strip()
+        #                 except: # no text in the page
+        #                     desc = 'Description Unavailable'
+        #             results_list.insert('', 'end', text = title, values=(desc, bookkeeping[result[0]]))
+        #             result_count += 1
 
 def url_click(event):
     input_id = results_list.selection()
@@ -95,6 +216,10 @@ def url_click(event):
 with open('index_text_file.json') as file:
     index = json.load(file)
     index_dict = json.loads(index)
+
+with open('bigram_index_text_file.json') as file:
+    bindex = json.load(file)
+    bindex_dict = json.loads(index)
 
 with open(r'C:\Users\User\Documents\CS 121\Project_3\WEBPAGES_RAW\bookkeeping.json') as b:
     bookkeeping = json.load(b)
