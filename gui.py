@@ -21,12 +21,12 @@ def search():
         if len(q_list) > 2:
             # rank bigram
             doc_list = ranking.ranked_results(q, bindex_dict)
-            result_doc_list = result_doc_list.extend(doc_list)
+            result_doc_list.extend(doc_list)
 
             # rank unigram if <20 bigram results
             if len(result_doc_list) < 20:
                 doc_list = ranking.ranked_results(q, index_dict)
-                result_doc_list = result_doc_list.extend(doc_list)
+                result_doc_list.extend(doc_list)
             
         elif len(q_list) == 2:
             # tf-idf bigram 
@@ -44,13 +44,13 @@ def search():
                 doc_dict[doc][2] = doc_dict[doc][2] * multiplier
 
             sorted_docs = sorted(doc_dict.items(), key=lambda item: item[1][2], reverse=True)
-            result_doc_list = result_doc_list.append(sorted_docs)
+            result_doc_list.extend(sorted_docs)
 
 
             # rank unigram if <20 bigram results
             if len(result_doc_list) < 20:
                 doc_list = ranking.ranked_results(q, index_dict)
-                result_doc_list = result_doc_list.append(doc_list)
+                result_doc_list.extend(doc_list)
 
         else:
             # tf-idf with unigram
@@ -70,8 +70,9 @@ def search():
             #print(index_dict[q])
 
             sorted_docs = sorted(doc_dict.items(), key=lambda item: item[1][2], reverse=True)
-            result_doc_list = sorted_docs
+            result_doc_list.extend(sorted_docs)
 
+        result_count = 0
         for result in result_doc_list:
                 if result[0] in bookkeeping and result_count < 20:
                     with open(r'C:\Users\User\Documents\CS 121\Project_3\WEBPAGES_RAW' + '\\' + result[0], 'rb') as f:
@@ -218,8 +219,8 @@ with open('index_text_file.json') as file:
     index_dict = json.loads(index)
 
 with open('bigram_index_text_file.json') as file:
-    bindex = json.load(file)
-    bindex_dict = json.loads(index)
+    bindex_dict = json.load(file)
+
 
 with open(r'C:\Users\User\Documents\CS 121\Project_3\WEBPAGES_RAW\bookkeeping.json') as b:
     bookkeeping = json.load(b)
