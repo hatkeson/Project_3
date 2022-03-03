@@ -64,23 +64,20 @@ class InvertedBigramIndex:
                     for i in range(0, text_tokens_len):
                         text_tokens[i] = lemmatizer.lemmatize(str.lower(text_tokens[i].strip(punctuation)))
 
-
-                    #filter out stopwords from text_tokens before generating a bigram
-                    text_tokens = self.filter_stopwords_in_text_token(text_tokens)
-
                     #get bigram from the text_tokens
                     self.bigrams = self.get_bigrams(text_tokens)
 
-
                     # add to inverted bigram-index
-                    for words in self.bigrams:
-                        if words in self.index:  # we've seen this word before
-                            if key in self.index[words]:  # in this document
-                                self.index[words][key][0] += 1
-                            else:  # seen word in other document
-                                self.index[words][key] = [1, 4, 0]
-                        else:  # haven't seen this word before
-                            self.index[words] = {key: [1, 4, 0]}  # List order: {docID: [freq, type, tf-idf]}
+                    for word in self.bigrams:
+                        word_split = word.split()
+                        if word_split[0] not in self.stopwords and word_split[1] not in self.stopwords:
+                            if word in self.index:  # we've seen this word before
+                                if key in self.index[word]:  # in this document
+                                    self.index[word][key][0] += 1
+                                else:  # seen word in other document
+                                    self.index[word][key] = [1, 4, 0]
+                            else:  # haven't seen this word before
+                                self.index[word] = {key: [1, 4, 0]}  # List order: {docID: [freq, type, tf-idf]}
                 except TypeError:
                     pass
 
@@ -94,21 +91,20 @@ class InvertedBigramIndex:
                     for i in range(0, text_tokens_len):
                         text_tokens[i] = lemmatizer.lemmatize(str.lower(text_tokens[i].strip(punctuation)))
 
-                    # filter out stopwords from text_tokens before generating a bigram
-                    text_tokens = self.filter_stopwords_in_text_token(text_tokens)
-
                     # get bigram from the text_tokens
                     self.bigrams = self.get_bigrams(text_tokens)
 
                     # add to inverted bigram-index
-                    for words in self.bigrams:
-                        if words in self.index:  # we've seen this word before
-                            if key in self.index[words]:  # in this document
-                                self.index[words][key][0] += 1
-                            else:  # seen word in other document
-                                self.index[words][key] = [1, 3, 0]
-                        else:  # haven't seen this word before
-                            self.index[words] = {key: [1, 3, 0]}  # List order: {docID: [freq, type, tf-idf]}
+                    for word in self.bigrams:
+                        word_split = word.split()
+                        if word_split[0] not in self.stopwords and word_split[1] not in self.stopwords:
+                            if word in self.index:  # we've seen this word before
+                                if key in self.index[word]:  # in this document
+                                    self.index[word][key][0] += 1
+                                else:  # seen word in other document
+                                    self.index[word][key] = [1, 3, 0]
+                            else:  # haven't seen this word before
+                                self.index[word] = {key: [1, 3, 0]}  # List order: {docID: [freq, type, tf-idf]}
                 except TypeError:
                     pass
 
@@ -121,21 +117,20 @@ class InvertedBigramIndex:
                     for i in range(0, text_tokens_len):
                         text_tokens[i] = lemmatizer.lemmatize(str.lower(text_tokens[i].strip(punctuation)))
 
-                    # filter out stopwords from text_tokens before generating a bigram
-                    text_tokens = self.filter_stopwords_in_text_token(text_tokens)
-
                     # get bigram from the text_tokens
                     self.bigrams = self.get_bigrams(text_tokens)
 
                     # add to inverted bigram-index
-                    for words in self.bigrams:
-                        if words in self.index:  # we've seen this word before
-                            if key in self.index[words]:  # in this document
-                                self.index[words][key][0] += 1
-                            else:  # seen word in other document
-                                self.index[words][key] = [1, 3, 0]
-                        else:  # haven't seen this word before
-                            self.index[words] = {key: [1, 3, 0]}  # List order: {docID: [freq, type, tf-idf]}
+                    for word in self.bigrams:
+                        word_split = word.split()
+                        if word_split[0] not in self.stopwords and word_split[1] not in self.stopwords:
+                            if word in self.index:  # we've seen this word before
+                                if key in self.index[word]:  # in this document
+                                    self.index[word][key][0] += 1
+                                else:  # seen word in other document
+                                    self.index[word][key] = [1, 3, 0]
+                            else:  # haven't seen this word before
+                                self.index[word] = {key: [1, 3, 0]}  # List order: {docID: [freq, type, tf-idf]}
                 except TypeError:
                     pass
 
@@ -149,22 +144,20 @@ class InvertedBigramIndex:
                     for i in range(0, text_tokens_len):
                         text_tokens[i] = lemmatizer.lemmatize(str.lower(text_tokens[i].strip(punctuation)))
 
-
-                    # filter out stopwords from text_tokens before generating a bigram
-                    text_tokens = self.filter_stopwords_in_text_token(text_tokens)
-
                     # get bigram from the text_tokens
                     self.bigrams = self.get_bigrams(text_tokens)
 
                     # add to inverted bigram-index
-                    for words in self.bigrams:
-                        if words in self.index:  # we've seen this word before
-                            if key in self.index[words]:  # in this document
-                                self.index[words][key][0] += 1
-                            else:  # seen word in other document
-                                self.index[words][key] = [1, 3, 0]
-                        else:  # haven't seen this word before
-                            self.index[words] = {key: [1, 3, 0]}  # List order: {docID: [freq, type, tf-idf]}
+                    for word in self.bigrams:
+                        word_split = word.split()
+                        if word_split[0] not in self.stopwords and word_split[1] not in self.stopwords:
+                            if word in self.index:  # we've seen this word before
+                                if key in self.index[word]:  # in this document
+                                    self.index[word][key][0] += 1
+                                else:  # seen word in other document
+                                    self.index[word][key] = [1, 3, 0]
+                            else:  # haven't seen this word before
+                                self.index[word] = {key: [1, 3, 0]}  # List order: {docID: [freq, type, tf-idf]}
                 except TypeError:
                     pass
 
@@ -178,22 +171,20 @@ class InvertedBigramIndex:
                     for i in range(0, text_tokens_len):
                         text_tokens[i] = lemmatizer.lemmatize(str.lower(text_tokens[i].strip(punctuation)))
 
-
-                    # filter out stopwords from text_tokens before generating a bigram
-                    text_tokens = self.filter_stopwords_in_text_token(text_tokens)
-
                     # get bigram from the text_tokens
                     self.bigrams = self.get_bigrams(text_tokens)
 
                     # add to inverted bigram-index
-                    for words in self.bigrams:
-                        if words in self.index:  # we've seen this word before
-                            if key in self.index[words]:  # in this document
-                                self.index[words][key][0] += 1
-                            else:  # seen word in other document
-                                self.index[words][key] = [1, 2, 0]
-                        else:  # haven't seen this word before
-                            self.index[words] = {key: [1, 2, 0]}  # List order: {docID: [freq, type, tf-idf]}
+                    for word in self.bigrams:
+                        word_split = word.split()
+                        if word_split[0] not in self.stopwords and word_split[1] not in self.stopwords:
+                            if word in self.index:  # we've seen this word before
+                                if key in self.index[word]:  # in this document
+                                    self.index[word][key][0] += 1
+                                else:  # seen word in other document
+                                    self.index[word][key] = [1, 2, 0]
+                            else:  # haven't seen this word before
+                                self.index[word] = {key: [1, 2, 0]}  # List order: {docID: [freq, type, tf-idf]}
                 except TypeError:
                     pass
 
@@ -210,21 +201,20 @@ class InvertedBigramIndex:
             for i in range(0, text_tokens_len):
                 text_tokens[i] = lemmatizer.lemmatize(str.lower(text_tokens[i].strip(punctuation)))
 
-            # filter out stopwords from text_tokens before generating a bigram
-            text_tokens = self.filter_stopwords_in_text_token(text_tokens)
-
             # get bigram from the text_tokens
             self.bigrams = self.get_bigrams(text_tokens)
 
             # add to inverted bigram-index
-            for words in self.bigrams:
-                if words in self.index:  # we've seen this word before
-                    if key in self.index[words]:  # in this document
-                        self.index[words][key][0] += 1
-                    else:  # seen word in other document
-                        self.index[words][key] = [1, 1, 0]
-                else:  # haven't seen this word before
-                    self.index[words] = {key: [1, 1, 0]}  # List order: {docID: [freq, type, tf-idf]}
+            for word in self.bigrams:
+                word_split = word.split()
+                if word_split[0] not in self.stopwords and word_split[1] not in self.stopwords:
+                    if word in self.index:  # we've seen this word before
+                        if key in self.index[word]:  # in this document
+                            self.index[word][key][0] += 1
+                        else:  # seen word in other document
+                            self.index[word][key] = [1, 1, 0]
+                    else:  # haven't seen this word before
+                        self.index[word] = {key: [1, 1, 0]}  # List order: {docID: [freq, type, tf-idf]}
 
 
 
@@ -249,9 +239,16 @@ class InvertedBigramIndex:
         bigrams = ngrams(tokens, 2)
         return [' '.join(grams) for grams in bigrams]
     
-    def filter_stopwords_in_text_token(self, token):
-        for word in token:
-            if word in self.stopwords:
-                token.remove(word)
-
+    def filter_stopwords_in_bigram(self, token):
+        for bigram in token:
+            # bigram is two words
+            bigram_split = bigram.split()
+            if bigram_split[0] in self.stopwords or bigram_split[1] in self.stopwords:
+                token.remove(bigram)
         return token
+
+
+bidx = InvertedBigramIndex()
+bidx.read_corpus(r'C:\Users\User\Documents\CS 121\Project_3\WEBPAGES_RAW')
+bidx.calculate_tf_idf()
+bidx.write_to_json()
