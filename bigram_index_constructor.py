@@ -1,7 +1,6 @@
 from nltk import ngrams
 from nltk.tokenize import WhitespaceTokenizer
 from nltk.stem import WordNetLemmatizer
-import nltk.corpus
 from string import punctuation
 import json
 from bs4 import BeautifulSoup
