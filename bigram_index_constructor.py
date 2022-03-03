@@ -242,13 +242,6 @@ class InvertedBigramIndex:
         bigrams = ngrams(tokens, 2)
         return [' '.join(grams) for grams in bigrams]
     
-    def filter_stopwords_in_bigram(self, token):
-        for bigram in token:
-            # bigram is two words
-            bigram_split = bigram.split()
-            if bigram_split[0] in self.stopwords or bigram_split[1] in self.stopwords:
-                token.remove(bigram)
-        return token
 
 
 bidx = InvertedBigramIndex()
