@@ -40,6 +40,24 @@ def ranked_results(query, index_dict):
 
         return sorted(doc_dict.items(), key=lambda item:item[1], reverse=True)
 
+    # TODO: handle single terms
+    else:    # if ' ' is not query => single term queries
+        # tf-idf with unigram
+        doc_dict = copy.deepcopy(index_dict[query])
+        doc_list = list(doc_dict)
+        # modify tf-idf score based on type of text
+        for doc in doc_list:
+            multiplier = 1
+            if doc_dict[doc][1] == 2:
+                multiplier = 1.5
+            elif doc_dict[doc][1] == 3:
+                multiplier = 2
+            elif doc_dict[doc][1] == 4:
+                multiplier = 2.5
+            doc_dict[doc][2] = doc_dict[doc][2] * multiplier
+
+        return sorted(doc_dict.item(), key=lambda item:item[1], reverse=True)
+
 
 def cosine_similarity(q,d):
     # q is a vector of the tf-idf of each term in the query

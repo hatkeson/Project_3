@@ -18,16 +18,24 @@ def search():
         q_list = q.split()
         result_doc_list = list()
 
+        # TODO: len(q_list) might return list of characters if query is single term?
+        # TODO: we prioritize bigram always?
+        # TODO: how does type work for 2+ queries?
+        # TODO: how to even rank 2+ queries?
+        # TODO: modify some parts to make more sense with ranking.py
+
         if len(q_list) > 2:
             # rank bigram
             doc_list = ranking.ranked_results(q, bindex_dict)
             result_doc_list.extend(doc_list)
 
-            # rank unigram if <20 bigram 
+            # TODO: modify this cuz ranked_results can handle single terms now
+            # rank unigram if <20 bigram results
             if len(result_doc_list) < 20:
                 doc_list = ranking.ranked_results(q, index_dict)
                 result_doc_list.extend(doc_list)
-            
+
+        # TODO: modify how we rank unigram after bigram is considered
         elif len(q_list) == 2:
             # tf-idf bigram 
             doc_dict = copy.deepcopy(bindex_dict[q])
@@ -46,12 +54,13 @@ def search():
             sorted_docs = sorted(doc_dict.items(), key=lambda item: item[1][2], reverse=True)
             result_doc_list.extend(sorted_docs)
 
-
+            # TODO: modify this cuz ranked_results can handle single terms now
             # rank unigram if <20 bigram results
             if len(result_doc_list) < 20:
                 doc_list = ranking.ranked_results(q, index_dict)
                 result_doc_list.extend(doc_list)
 
+        # TODO: modify this cuz ranked_results can handle single terms now
         else:
             # tf-idf with unigram
             doc_dict = copy.deepcopy(index_dict[q])
@@ -66,8 +75,6 @@ def search():
                 elif doc_dict[doc][1] == 4:
                     multiplier = 2.5
                 doc_dict[doc][2] = doc_dict[doc][2] * multiplier
-            #print(doc_dict)
-            #print(index_dict[q])
 
             sorted_docs = sorted(doc_dict.items(), key=lambda item: item[1][2], reverse=True)
             result_doc_list.extend(sorted_docs)
