@@ -23,7 +23,7 @@ def search():
             doc_list = ranking.ranked_results(q, bindex_dict)
             result_doc_list.extend(doc_list)
 
-            # rank unigram if <20 bigram results
+            # rank unigram if <20 bigram 
             if len(result_doc_list) < 20:
                 doc_list = ranking.ranked_results(q, index_dict)
                 result_doc_list.extend(doc_list)
@@ -88,6 +88,11 @@ def search():
                             title = 'Untitled Document'
                     try:
                         desc = page.find('meta', attrs = {'name':'description'})['content']
+                        if desc == "":
+                            try:
+                                desc = page.find('p').text.strip().splitlines()[0].strip()
+                            except:
+                                desc = 'Description Unavailable'
                     except TypeError: # no meta description
                         try:
                             desc = page.find('p').text.strip().splitlines()[0].strip()
