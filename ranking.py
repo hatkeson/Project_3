@@ -80,8 +80,8 @@ def ranked_multiple_term_query():
 def cosine_similarity(q,d):
     # q is a vector of the tf-idf of each term in the query
     # d is a vector of the tf-idf of each term in the document
-    print(q)
-    print(d)
+    #print(q)
+    #print(d)
     return (np.dot(q,d)) / (np.sqrt(np.dot(q,q)) * np.sqrt(np.dot(d,d)))
 
 # q = [1.09, 2.00]
