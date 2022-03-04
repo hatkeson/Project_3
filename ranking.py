@@ -1,22 +1,20 @@
 import numpy as np
 import copy
 
-def ranked_results(query, index_dict):
+# Used for calculating query score by unigrams
+def ranked_results_by_unigrams(query, index_dict):
     # Assuming query length has to be > 0
     if ' ' in query:
         str_set = set(query.split())
         d_vector = []
         q_vector = []
-        doc_dict = {}   # dictionary of resulting docs
+        doc_dict = {}   # dictionary of resulting docs: keys = doc, value = score
         doc_set = set() # set of resulting docs
         # Calculate d and q of each term in query
-        # TODO: remember type of the word for scoring [DONE]
-        # TODO: ^ how would type be incorporated in queries with >= 2 terms?
-        # TODO: confirm if formula for q value is correct
         # get q_vector first
         for word in str_set:
             for doc in list(index_dict[word]):
-                doc_set.add(doc)
+                doc_set.add(doc)    # Add to set => I have visited this doc
             # q value
             q_value = ((1 + np.log10(query.split().count(word))) * (np.log10(36496) / (len(index_dict[word]) + 1)))
             q_vector.append(q_value)
@@ -35,6 +33,7 @@ def ranked_results(query, index_dict):
                     d_vector.append(index_dict[word][doc][2] * multiplier)
                 else:
                     d_vector.append(0)
+
             doc_dict[doc] = cosine_similarity(q_vector, d_vector)
             d_vector.clear()
 
@@ -58,6 +57,20 @@ def ranked_results(query, index_dict):
 
         return sorted(doc_dict.item(), key=lambda item:item[1], reverse=True)
 
+# Used for 2+-term queries
+def ranked_multiple_term_query():
+    pass
+
+    # split query into pairs/bigrams
+    # "one two three four"
+    # [one two, two three, three four]
+    # empty list. then extend/append
+    # for i=0; i < len; i++
+    #   ranked_result(list[i], bigram_index)
+    #   reulst_list.extend()
+    # at the end of loop, we have a list of combined results based on bigrams
+    # take the first 20
+    # if less than 20, repeat for loop but with unigrams
 
 def cosine_similarity(q,d):
     # q is a vector of the tf-idf of each term in the query

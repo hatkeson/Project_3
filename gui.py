@@ -18,46 +18,58 @@ def search():
         q_list = q.split()
         result_doc_list = list()
 
-        # TODO: len(q_list) might return list of characters if query is single term?
-        # TODO: we prioritize bigram always?
+        # TODO: len(q_list) might return list of characters if query is single term? [DONE]
+        # TODO: we prioritize bigram always? [DONE]
         # TODO: how does type work for 2+ queries?
         # TODO: how to even rank 2+ queries?
         # TODO: modify some parts to make more sense with ranking.py
+        # TODO: KeyError crashes the GUI?
+
+        # "hello there Mary hi" => [hello there, there Mary, Mary hi] => look up bigram for these 3 entries
+        # cosine on the bigrams
+        #
 
         if len(q_list) > 2:
             # rank bigram
-            doc_list = ranking.ranked_results(q, bindex_dict)
+            doc_list = ranking.ranked_results_by_unigrams(q, bindex_dict)
             result_doc_list.extend(doc_list)
 
             # TODO: modify this cuz ranked_results can handle single terms now
             # rank unigram if <20 bigram results
             if len(result_doc_list) < 20:
-                doc_list = ranking.ranked_results(q, index_dict)
+                doc_list = ranking.ranked_results_by_unigrams(q, index_dict)
                 result_doc_list.extend(doc_list)
 
         # TODO: modify how we rank unigram after bigram is considered
+        # Handle 2-term queries
         elif len(q_list) == 2:
-            # tf-idf bigram 
-            doc_dict = copy.deepcopy(bindex_dict[q])
-            doc_list = list(doc_dict)
-            # modify tf-idf score based on type of text
-            for doc in doc_list:
-                multiplier = 1
-                if doc_dict[doc][1] == 2:
-                    multiplier = 1.5
-                elif doc_dict[doc][1] == 3:
-                    multiplier = 2
-                elif doc_dict[doc][1] == 4:
-                    multiplier = 2.5
-                doc_dict[doc][2] = doc_dict[doc][2] * multiplier
+            # tf-idf bigram
+            # If the bigram exists
+            if q in bindex_dict:
+                doc_dict = copy.deepcopy(bindex_dict[q])
+                doc_list = list(doc_dict)
+                # modify tf-idf score based on type of text
+                for doc in doc_list:
+                    multiplier = 1
+                    if doc_dict[doc][1] == 2:
+                        multiplier = 1.5
+                    elif doc_dict[doc][1] == 3:
+                        multiplier = 2
+                    elif doc_dict[doc][1] == 4:
+                        multiplier = 2.5
+                    doc_dict[doc][2] = doc_dict[doc][2] * multiplier
 
-            sorted_docs = sorted(doc_dict.items(), key=lambda item: item[1][2], reverse=True)
-            result_doc_list.extend(sorted_docs)
+                sorted_docs = sorted(doc_dict.items(), key=lambda item: item[1][2], reverse=True)
+                result_doc_list.extend(sorted_docs)
 
-            # TODO: modify this cuz ranked_results can handle single terms now
-            # rank unigram if <20 bigram results
-            if len(result_doc_list) < 20:
-                doc_list = ranking.ranked_results(q, index_dict)
+                # TODO: modify this cuz ranked_results can handle single terms now
+                # rank unigram if < 20 bigram results
+                if len(result_doc_list) < 20:
+                    doc_list = ranking.ranked_results_by_unigrams(q, index_dict)
+                    result_doc_list.extend(doc_list)
+            # If the bigram doesnt exist, just check unigrams
+            else:
+                doc_list = ranking.ranked_results_by_unigrams(q, index_dict)
                 result_doc_list.extend(doc_list)
 
         # TODO: modify this cuz ranked_results can handle single terms now
@@ -79,10 +91,12 @@ def search():
             sorted_docs = sorted(doc_dict.items(), key=lambda item: item[1][2], reverse=True)
             result_doc_list.extend(sorted_docs)
 
+
         result_count = 0
         for result in result_doc_list:
                 if result[0] in bookkeeping and result_count < 20:
-                    with open(r'C:\Users\User\Documents\CS 121\Project_3\WEBPAGES_RAW' + '\\' + result[0], 'rb') as f:
+                    ######## NOTE: THIS IS PATH SPECIFIC ########
+                    with open(r'D:\121 Project 3\webpages\WEBPAGES_RAW' + '\\' + result[0], 'rb') as f:
                         page = BeautifulSoup(f, 'html.parser')
                     try:
                         title = page.find('title').string.strip()
@@ -228,8 +242,8 @@ with open('index_text_file.json') as file:
 with open('bigram_index_text_file.json') as file:
     bindex_dict = json.load(file)
 
-
-with open(r'C:\Users\User\Documents\CS 121\Project_3\WEBPAGES_RAW\bookkeeping.json') as b:
+######## NOTE: THIS IS PATH SPECIFIC ########
+with open('D:\\121 Project 3\webpages\WEBPAGES_RAW\\bookkeeping.json') as b:
     bookkeeping = json.load(b)
 
 root = Tk() # creates window
