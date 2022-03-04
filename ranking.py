@@ -13,11 +13,14 @@ def ranked_results_by_unigrams(query, index_dict):
         # Calculate d and q of each term in query
         # get q_vector first
         for word in str_set:
-            for doc in list(index_dict[word]):
-                doc_set.add(doc)    # Add to set => I have visited this doc
-            # q value
-            q_value = ((1 + np.log10(query.split().count(word))) * (np.log10(36496) / (len(index_dict[word]) + 1)))
-            q_vector.append(q_value)
+            if word in index_dict:
+                for doc in list(index_dict[word]):
+                    doc_set.add(doc)    # Add to set => I have visited this doc
+                # q value
+                q_value = ((1 + np.log10(query.split().count(word))) * (np.log10(36496) / (len(index_dict[word]) + 1)))
+                q_vector.append(q_value)
+            else:
+                q_vector.append(0)
 
         # get d_vector for each doc, then calculate cosine similarity for each doc => scoring
         for doc in doc_set:
@@ -42,20 +45,22 @@ def ranked_results_by_unigrams(query, index_dict):
     # TODO: handle single terms
     else:    # if ' ' is not query => single term queries
         # tf-idf with unigram
-        doc_dict = copy.deepcopy(index_dict[query])
-        doc_list = list(doc_dict)
-        # modify tf-idf score based on type of text
-        for doc in doc_list:
-            multiplier = 1
-            if doc_dict[doc][1] == 2:
-                multiplier = 1.5
-            elif doc_dict[doc][1] == 3:
-                multiplier = 2
-            elif doc_dict[doc][1] == 4:
-                multiplier = 2.5
-            doc_dict[doc][2] = doc_dict[doc][2] * multiplier
-
-        return sorted(doc_dict.item(), key=lambda item:item[1], reverse=True)
+        if query in index_dict:
+            doc_dict = copy.deepcopy(index_dict[query])
+            doc_list = list(doc_dict)
+            # modify tf-idf score based on type of text
+            for doc in doc_list:
+                multiplier = 1
+                if doc_dict[doc][1] == 2:
+                    multiplier = 1.5
+                elif doc_dict[doc][1] == 3:
+                    multiplier = 2
+                elif doc_dict[doc][1] == 4:
+                    multiplier = 2.5
+                doc_dict[doc][2] = doc_dict[doc][2] * multiplier
+            return sorted(doc_dict.item(), key=lambda item:item[1], reverse=True)
+        else:
+            return []
 
 # Used for 2+-term queries
 def ranked_multiple_term_query():

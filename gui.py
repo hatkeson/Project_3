@@ -75,21 +75,22 @@ def search():
         # TODO: modify this cuz ranked_results can handle single terms now
         else:
             # tf-idf with unigram
-            doc_dict = copy.deepcopy(index_dict[q])
-            doc_list = list(doc_dict)
-            # modify tf-idf score based on type of text
-            for doc in doc_list:
-                multiplier = 1
-                if doc_dict[doc][1] == 2:
-                    multiplier = 1.5
-                elif doc_dict[doc][1] == 3:
-                    multiplier = 2
-                elif doc_dict[doc][1] == 4:
-                    multiplier = 2.5
-                doc_dict[doc][2] = doc_dict[doc][2] * multiplier
+            if q in index_dict:
+                doc_dict = copy.deepcopy(index_dict[q])
+                doc_list = list(doc_dict)
+                # modify tf-idf score based on type of text
+                for doc in doc_list:
+                    multiplier = 1
+                    if doc_dict[doc][1] == 2:
+                        multiplier = 1.5
+                    elif doc_dict[doc][1] == 3:
+                        multiplier = 2
+                    elif doc_dict[doc][1] == 4:
+                        multiplier = 2.5
+                    doc_dict[doc][2] = doc_dict[doc][2] * multiplier
 
-            sorted_docs = sorted(doc_dict.items(), key=lambda item: item[1][2], reverse=True)
-            result_doc_list.extend(sorted_docs)
+                sorted_docs = sorted(doc_dict.items(), key=lambda item: item[1][2], reverse=True)
+                result_doc_list.extend(sorted_docs)
 
 
         result_count = 0
