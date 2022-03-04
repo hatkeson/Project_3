@@ -109,6 +109,11 @@ def search():
                             title = 'Untitled Document'
                     try:
                         desc = page.find('meta', attrs = {'name':'description'})['content']
+                        if desc == "":
+                            try:
+                                desc = page.find('p').text.strip().splitlines()[0].strip()
+                            except:
+                                desc = 'Description Unavailable'
                     except TypeError: # no meta description
                         try:
                             desc = page.find('p').text.strip().splitlines()[0].strip()
