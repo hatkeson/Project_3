@@ -8,7 +8,7 @@ import copy
 import nltk
 
 if __name__ == "__main__":
-
+    pass
     # get directory of the webpages file, feed to constructor
     # inv_idx = InvertedIndex()
     # inv_idx.read_corpus(sys.argv[1])
