@@ -80,7 +80,7 @@ def ranked_results_by_bigrams(query, bindex_dict):
             for doc in list(bindex_dict[bigram]):
                 doc_set.add(doc) # I have visited this doc
             # q value
-            q_value = ((1 + np.log10(bigrams_list.count(bigram))) * (np.log10(36354) / (len(bindex_dict[bigram] + 1))))
+            q_value = ((1 + np.log10(bigrams_list.count(bigram))) * (np.log10(36354) / (len(bindex_dict[bigram]) + 1)))
             q_vector.append(q_value)
         else:
             q_vector.append(0)
