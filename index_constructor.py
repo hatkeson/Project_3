@@ -61,7 +61,6 @@ class InvertedIndex:
                     for i in range(0, text_tokens_len):
                         text_tokens[i] = lemmatizer.lemmatize(str.lower(text_tokens[i].strip(punctuation)))
                     # add to inverted index
-                    # TODO: UPDATE FREQUENCY PROPERLY (is this correct?)
                     for word in text_tokens:
                         if word not in self.stopwords:
                             if word in self.index:  # we've seen this word before
@@ -82,7 +81,6 @@ class InvertedIndex:
                     for i in range(0, text_tokens_len):
                         text_tokens[i] = lemmatizer.lemmatize(str.lower(text_tokens[i].strip(punctuation)))
                     # add to inverted index
-                    # TODO: UPDATE FREQUENCY PROPERLY (is this correct?)
                     for word in text_tokens:
                         if word not in self.stopwords:
                             if word in self.index:  # we've seen this word before
@@ -103,7 +101,6 @@ class InvertedIndex:
                     for i in range(0, text_tokens_len):
                         text_tokens[i] = lemmatizer.lemmatize(str.lower(text_tokens[i].strip(punctuation)))
                     # add to inverted index
-                    # TODO: UPDATE FREQUENCY PROPERLY (is this correct?)
                     for word in text_tokens:
                         if word not in self.stopwords:
                             if word in self.index:  # we've seen this word before
@@ -124,7 +121,6 @@ class InvertedIndex:
                     for i in range(0, text_tokens_len):
                         text_tokens[i] = lemmatizer.lemmatize(str.lower(text_tokens[i].strip(punctuation)))
                     # add to inverted index
-                    # TODO: UPDATE FREQUENCY PROPERLY (is this correct?)
                     for word in text_tokens:
                         if word not in self.stopwords:
                             if word in self.index:  # we've seen this word before
@@ -145,7 +141,6 @@ class InvertedIndex:
                     for i in range(0, text_tokens_len):
                         text_tokens[i] = lemmatizer.lemmatize(str.lower(text_tokens[i].strip(punctuation)))
                     # add to inverted index
-                    # TODO: UPDATE FREQUENCY PROPERLY (is this correct?)
                     for word in text_tokens:
                         if word not in self.stopwords:
                             if word in self.index:  # we've seen this word before
@@ -171,7 +166,6 @@ class InvertedIndex:
                 text_tokens[i] = lemmatizer.lemmatize(str.lower(text_tokens[i].strip(punctuation)))
 
             # add to inverted index
-            # TODO: UPDATE FREQUENCY PROPERLY (is this correct?)
             for word in text_tokens:
                 if word not in self.stopwords:
                     if word in self.index:  # we've seen this word before
